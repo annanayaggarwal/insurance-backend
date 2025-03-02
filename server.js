@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect("mongodb+srv://anniagg2003:insurancecovers@cluster0.t3qa1.mongodb.net/", {
+mongoose.connect("mongodb+srv://anniagg2003:annanay123456@chat-app.k7eirmx.mongodb.net/?retryWrites=true&w=majority&appName=chat-app", {
 //   useNewUrlParser: true,
 //   useUnifiedTopology: true,
 })
