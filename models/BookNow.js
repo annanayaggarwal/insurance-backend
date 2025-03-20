@@ -16,7 +16,7 @@ const BookingSchema = new mongoose.Schema({
   },
   numberOfPeople: { 
     type: Number,
-    min: 1
+    // min: 1
   },
   selectedPackage: { 
     type: mongoose.Schema.Types.ObjectId, 

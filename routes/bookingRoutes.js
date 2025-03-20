@@ -52,13 +52,12 @@ router.post('/', async (req, res) => {
     const customerMailOptions = {
       from: process.env.EMAIL_USER,
       to: booking.email,
-      subject: 'Booking Confirmation - Insurance Rivers',
+      subject: 'Enquiry Confirmation - Insurance Rivers',
       html: `
-        <h2>Thank you for your booking!</h2>
+        <h2>Thank you for your Enquiry!</h2>
         <p>Dear ${booking.name},</p>
-        <p>We have received your booking request for the following package:</p>
+        <p>We have received your request for the following package:</p>
         <p><strong>Package:</strong> ${package.title}</p>
-        <p><strong>Number of People:</strong> ${booking.numberOfPeople}</p>
         <p>We will contact you shortly to confirm your selcted insurance package and provide further details.</p>
         <p>Best regards,<br>Insurance Rivers Team</p>
       `
@@ -67,7 +66,7 @@ router.post('/', async (req, res) => {
     // Send notification email to admin
     const adminMailOptions = {
       from: process.env.EMAIL_USER,
-      to: process.env.ADMIN_EMAIL || 'admin@shaktitravelsindia.com',
+      to: process.env.ADMIN_EMAIL || 'helpdesk@insurancerivers.in',
       subject: 'New Booking Received',
       html: `
         <h2>New Booking Request</h2>
@@ -75,7 +74,6 @@ router.post('/', async (req, res) => {
         <p><strong>Customer Name:</strong> ${booking.name}</p>
         <p><strong>Email:</strong> ${booking.email}</p>
         <p><strong>Phone:</strong> ${booking.phone}</p>
-        <p><strong>Number of People:</strong> ${booking.numberOfPeople}</p>
         <p><strong>Message:</strong> ${booking.message || 'No message provided'}</p>
       `
     };
