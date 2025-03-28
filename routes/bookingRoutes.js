@@ -29,10 +29,13 @@ router.get('/', auth, async (req, res) => {
 // Create new booking
 router.post('/', async (req, res) => {
   try {
-    // Validate package exists
-    const package = await Package.findById(req.body.selectedPackage);
-    if (!package) {
-      return res.status(404).json({ message: 'Selected package not found' });
+    // Validate package exists only if provided
+    let package;
+    if (req.body.selectedPackage) {
+      package = await Package.findById(req.body.selectedPackage);
+      if (!package) {
+        return res.status(404).json({ message: 'Selected package not found' });
+      }
     }
 
     // Create booking
@@ -40,9 +43,8 @@ router.post('/', async (req, res) => {
       name: req.body.name,
       email: req.body.email,
       phone: req.body.phone,
-      numberOfPeople: req.body.numberOfPeople,
-      selectedPackage: req.body.selectedPackage,
-      // travelDate: new Date(req.body.travelDate),
+      numberOfPeople: req.body.numberOfPeople || 1, // Default to 1 if not provided
+      selectedPackage: req.body.selectedPackage || null, // Allow null if not provided
       message: req.body.message
     });
 
@@ -56,9 +58,8 @@ router.post('/', async (req, res) => {
       html: `
         <h2>Thank you for your Enquiry!</h2>
         <p>Dear ${booking.name},</p>
-        <p>We have received your request for the following package:</p>
-        <p><strong>Package:</strong> ${package.title}</p>
-        <p>We will contact you shortly to confirm your selcted insurance package and provide further details.</p>
+        <p>We have received your request${package ? ` for the following package: <strong>${package.title}</strong>` : '.'}</p>
+        <p>We will contact you shortly to discuss your insurance query.</p>
         <p>Best regards,<br>Insurance Rivers Team</p>
       `
     };
@@ -67,10 +68,10 @@ router.post('/', async (req, res) => {
     const adminMailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.ADMIN_EMAIL || 'helpdesk@insurancerivers.in',
-      subject: 'New Booking Received',
+      subject: 'New Enquiry Received',
       html: `
-        <h2>New Booking Request</h2>
-        <p><strong>Package:</strong> ${package.title}</p>
+        <h2>New Enquiry Request</h2>
+        ${package ? `<p><strong>Package:</strong> ${package.title}</p>` : ''}
         <p><strong>Customer Name:</strong> ${booking.name}</p>
         <p><strong>Email:</strong> ${booking.email}</p>
         <p><strong>Phone:</strong> ${booking.phone}</p>
@@ -84,7 +85,6 @@ router.post('/', async (req, res) => {
       await transporter.sendMail(adminMailOptions);
     } catch (emailErr) {
       console.error('Error sending emails:', emailErr);
-      // Don't return error to client, booking was still successful
     }
 
     res.status(201).json(newBooking);

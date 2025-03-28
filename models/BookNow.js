@@ -21,7 +21,6 @@ const BookingSchema = new mongoose.Schema({
   selectedPackage: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Package',
-    required: true 
   },
   message: { 
     type: String
